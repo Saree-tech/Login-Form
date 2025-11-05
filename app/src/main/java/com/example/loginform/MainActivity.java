@@ -45,25 +45,30 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.GONE);
 
-        // Login button
+        // Login button → check credentials
         loginButton.setOnClickListener(v -> checkLogin());
 
-        // Google link
+        // Google button → open browser
         googleButton.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://www.google.com"));
             startActivity(browserIntent);
         });
 
-        // No account action
-        noAccountText.setOnClickListener(v -> showDialog("Account Help",
-                "You currently don’t have an account.\nPlease contact your administrator to create one."));
+        // No account? → Go to Signup screen
+        noAccountText.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, signup.class);
+            startActivity(intent);
+        });
 
-        // Forgot password action
-        forgetPasswordText.setOnClickListener(v -> showDialog("Password Help",
-                "Forgot your password?\nPlease contact the administrator or IT support for assistance."));
+        // Forgot password → show alert
+        forgetPasswordText.setOnClickListener(v -> showDialog(
+                "Password Help",
+                "Forgot your password?\nPlease contact the administrator or IT support for assistance."
+        ));
     }
 
+    // ✅ Check user login from Firestore
     private void checkLogin() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
@@ -75,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        // Search user in Firestore
         db.collection("users")
                 .whereEqualTo("email", email)
                 .get()
@@ -94,8 +98,15 @@ public class MainActivity extends AppCompatActivity {
 
                         if (matched) {
                             Toast.makeText(this, "✅ Login Successful!", Toast.LENGTH_LONG).show();
+
+                            // Clear fields
                             emailEditText.setText("");
                             passwordEditText.setText("");
+
+                            // 🔹 Navigate to MainActivity2 after successful login
+                            Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                            startActivity(intent);
+                            finish(); // close login screen
                         } else {
                             Toast.makeText(this, "❌ Incorrect Password", Toast.LENGTH_SHORT).show();
                         }
@@ -110,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    // Simple alert dialog helper
     private void showDialog(String title, String message) {
         new AlertDialog.Builder(this)
                 .setTitle(title)
