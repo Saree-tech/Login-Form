@@ -50,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Google button → open browser
         googleButton.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://www.google.com"));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"));
             startActivity(browserIntent);
         });
 
